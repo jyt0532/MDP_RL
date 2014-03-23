@@ -1,3 +1,33 @@
+///////////////////////////////////////////////////////////////////////////////
+////////                                                                           //
+//////// Program Name : grid_world.cpp                                             //
+//////// Course CRN   : CS440 - Artificial Intelligence                            //
+//////// Instructor   : Prof. Svetlana Lazebnik                                    // 
+//////// Author       : Bo-Yu, Chiang                                              //
+//////// NetID / UIN  : bchiang3 / 677629729                                       //
+//////// Email        : jyt0532@gmail.com                                          //
+//////// Affiliation  : CS Dept., University of Illinois at Urbana-Champaign       //
+//////// Latest update: 12/13/2013                                                 //
+////////                                                                           //
+//////// Copyright (c) 2013, Bo-Yu, Chiang                                         //
+////////                                                                           //
+//////// This program is free software: you can redistribute it and/or modify      //
+//////// it under the terms of the GNU General Public License as published by      //
+//////// the Free Software Foundation, either version 3 of the License, or         //
+//////// (at your option) any later version.                                       //
+////////                                                                           //
+//////// This program is distributed in the hope that it will be useful,           //
+//////// but WITHOUT ANY WARRANTY; without even the implied warranty of            //
+//////// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             //
+//////// GNU General Public License for more details.                              //
+////////                                                                           //
+//////// You should have received a copy of the GNU General Public License         //
+//////// along with this program.  If not, see <http://www.gnu.org/licenses/>.     //
+////////                                                                           //
+////////                                                                           //
+////////                                                                           //
+/////////////////////////////////////////////////////////////////////////////////////
+
 #include <iostream>
 #include <cstdlib>
 #include <cstdio>
@@ -184,11 +214,13 @@ void compute_policy(){
   double up_utility, left_utility, down_utility, right_utility;
   for(i = 0; i < 6; i++){
     for(j = 0; j < 6; j++){    
-      up_utility = 0.8 * up(i, j) + 0.1 * left(i, j) + 0.1 * right(i, j);
-      left_utility = 0.8 * left(i, j) + 0.1 * up(i, j) + 0.1 * down(i, j);
-      down_utility = 0.8 * down(i, j) + 0.1 * left(i, j) + 0.1 * right(i, j);
-      right_utility = 0.8 * right(i, j) + 0.1 * up(i, j) + 0.1 * down(i, j);
-      value_iteration_policy[i][j] = decide_max_action(up_utility, left_utility, down_utility, right_utility);
+      if(wall[i][j] != 1 && terminal[i][j] != 1){
+        up_utility = 0.8 * up(i, j) + 0.1 * left(i, j) + 0.1 * right(i, j);
+        left_utility = 0.8 * left(i, j) + 0.1 * up(i, j) + 0.1 * down(i, j);
+        down_utility = 0.8 * down(i, j) + 0.1 * left(i, j) + 0.1 * right(i, j);
+        right_utility = 0.8 * right(i, j) + 0.1 * up(i, j) + 0.1 * down(i, j);
+        value_iteration_policy[i][j] = decide_max_action(up_utility, left_utility, down_utility, right_utility);
+      }
     }
   }
 }
@@ -250,7 +282,6 @@ void policy_iteration_algorithm(){
         if(wall[i][j] != 1 && terminal[i][j] != 1){
           changed = renew_policy(i, j);
           if(changed == true){
-            //printf("%d %d\n", i, j);
             policy_changed = true;
           }
         }
@@ -258,7 +289,6 @@ void policy_iteration_algorithm(){
     }
     if(policy_changed == false)
       break;
-    printf("?\n");
   }
 }
 void print_value_policy(){
